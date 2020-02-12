@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+const initState = {
+  input: '',
+};
 export default class Searchbar extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
@@ -20,6 +23,7 @@ export default class Searchbar extends Component {
     const { onSubmit } = this.props;
     const { input } = this.state;
     onSubmit(input);
+    this.setState({ ...initState });
   };
 
   render() {

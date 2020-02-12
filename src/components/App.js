@@ -18,8 +18,10 @@ export default class App extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { page, query } = this.state;
-    if (prevState.page !== page) {
-      this.getDataByParams({ query, page });
+    if (prevState.page !== page || prevState.query !== query) {
+      if (query !== '') {
+        this.getDataByParams({ query, page });
+      }
     }
   }
 
