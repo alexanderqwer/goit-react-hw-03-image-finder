@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
-import * as API from '../services/api';
-import Button from './Button/Button';
+import getImages from '../services/api';
+import LoadMoreButton from './LoadMoreButton/LoadMoreButton ';
 import Loader from './Loader/Loader';
 import Modal from './Modal/Modal';
 
@@ -30,7 +30,7 @@ export default class App extends Component {
     const scrollHeight = page > 1 ? document.documentElement.scrollHeight : 0;
     this.setState({ isLoading: true });
     return (
-      API.getImages({ query, page })
+      getImages({ query, page })
         .then(({ data }) =>
           this.setState({ allData: [...allData, ...data.hits] }),
         )
@@ -63,22 +63,25 @@ export default class App extends Component {
     this.setState({ isModal: false });
   };
 
+  getLargeImageURL = () => {
+    const { allData, isModal, idLargeImageURL } = this.state;
+    const element = allData.find(i => i.id === Number(idLargeImageURL));
+    return isModal ? element.largeImageURL : '';
+  };
+
   render() {
-    const { allData, isLoading, isModal, idLargeImageURL } = this.state;
-    const getLargeImageURL = () => {
-      const element = allData.find(i => i.id === Number(idLargeImageURL));
-      const result = isModal ? element.largeImageURL : '';
-      return result;
-    };
+    const { allData, isLoading, isModal } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleOnSubmit} />
         <ImageGallery data={allData} onClick={this.openModal} />
         {isLoading && <Loader />}
-        {allData.length > 0 && <Button onClick={this.handleLoadeMore} />}
+        {allData.length > 0 && (
+          <LoadMoreButton onClick={this.handleLoadeMore} />
+        )}
         {isModal && (
           <Modal onClick={this.closeModal}>
-            <img src={getLargeImageURL()} alt="" />
+            <img src={this.getLargeImageURL()} alt="" />
           </Modal>
         )}
       </>
